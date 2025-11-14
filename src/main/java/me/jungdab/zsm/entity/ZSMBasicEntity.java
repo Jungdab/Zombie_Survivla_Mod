@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
@@ -44,10 +45,11 @@ public class ZSMBasicEntity extends HostileEntity {
         }
     }
 
-    public boolean damage(DamageSource source, float amount) {
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if(source.getAttacker() instanceof PlayerEntity player && ZombieBoneArmorItem.hasFullSuitOfArmorOn(player)) {
             if(amount > 0) amount *= 2f;
         }
-        return super.damage(source, amount);
+        return super.damage(world, source, amount);
     }
 }

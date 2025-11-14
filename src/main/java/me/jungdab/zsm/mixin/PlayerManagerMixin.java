@@ -68,7 +68,7 @@ public abstract class PlayerManagerMixin {
         }
 
         if(wasCreative) {
-            Vec3d vec3d = teleportTarget.pos();
+            Vec3d vec3d = teleportTarget.position();
             serverPlayerEntity.refreshPositionAndAngles(vec3d.x, vec3d.y, vec3d.z, teleportTarget.yaw(), teleportTarget.pitch());
 
             if (teleportTarget.missingRespawnBlock()) {
@@ -102,7 +102,7 @@ public abstract class PlayerManagerMixin {
         serverPlayerEntity.onSpawn();
         serverPlayerEntity.setHealth(serverPlayerEntity.getHealth());
         if (!alive) {
-            BlockPos blockPos = BlockPos.ofFloored(teleportTarget.pos());
+            BlockPos blockPos = BlockPos.ofFloored(teleportTarget.position());
             BlockState blockState = serverWorld.getBlockState(blockPos);
             if (blockState.isOf(Blocks.RESPAWN_ANCHOR)) {
                 serverPlayerEntity.networkHandler

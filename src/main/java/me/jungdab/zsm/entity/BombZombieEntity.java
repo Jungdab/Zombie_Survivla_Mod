@@ -19,6 +19,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -84,8 +85,8 @@ public class BombZombieEntity extends ZSMBasicEntity implements GeoEntity {
     }
 
     @Override
-    public void mobTick() {
-        super.mobTick();
+    protected void mobTick(ServerWorld world) {
+        super.mobTick(world);
 
         if(this.isThrow && this.getVelocity().length() < 0.5) this.explode();
     }
@@ -94,19 +95,15 @@ public class BombZombieEntity extends ZSMBasicEntity implements GeoEntity {
         if (!this.getWorld().isClient) {
             this.dead = true;
             this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 5f, World.ExplosionSourceType.MOB);
-            this.onRemoval(Entity.RemovalReason.KILLED);
+            this.onRemoval((ServerWorld) this.getWorld(), Entity.RemovalReason.KILLED);
             this.discard();
         }
     }
 
 
     @Override
-    public boolean tryAttack(Entity target) {
+    public boolean tryAttack(ServerWorld world, Entity target) {
         return true;
-    }
-
-    protected int computeFallDamage(float fallDistance, float damageMultiplier) {
-        return 0;
     }
 
     public boolean isIgnited() {
@@ -135,7 +132,7 @@ public class BombZombieEntity extends ZSMBasicEntity implements GeoEntity {
     }
 
     public void knockBackResistance() {
-        EntityAttributeInstance instance = this.getAttributes().getCustomInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
+        EntityAttributeInstance instance = this.getAttributes().getCustomInstance(EntityAttributes.KNOCKBACK_RESISTANCE);
         if(instance != null) instance.setBaseValue(1.0f);
     }
 
@@ -149,12 +146,12 @@ public class BombZombieEntity extends ZSMBasicEntity implements GeoEntity {
 
     public static DefaultAttributeContainer.Builder createZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 40)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
-                .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0);
+                .add(EntityAttributes.MAX_HEALTH, 40)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
+                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY, 1.0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 3.0)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0);
 
     }
     protected SoundEvent getAmbientSound() {

@@ -14,6 +14,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
@@ -43,6 +44,8 @@ public class ZombieHammerItem extends Item {
     }
 
     private void smash(LivingEntity mob, PlayerEntity attacker) {
+        if(!(attacker.getWorld() instanceof ServerWorld world)) return;
+
         mob.playSound(SoundEvents.ITEM_MACE_SMASH_GROUND_HEAVY, 1F, 1F);
 
         List<LivingEntity> targetList = mob.getWorld().getEntitiesByClass(LivingEntity.class, new Box(mob.getX() - 5, mob.getY() - 1, mob.getZ() - 5, mob.getX() + 5, mob.getY() + 1.5, mob.getZ() + 5), entity -> !(entity instanceof PlayerEntity) && !entity.equals(mob));
@@ -50,24 +53,26 @@ public class ZombieHammerItem extends Item {
 
         DamageSource damageSource = attacker.getDamageSources().playerAttack(attacker);
 
-        float damage = (float) attacker.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        float damage = (float) attacker.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
 
         for(LivingEntity entity : targetList) {
-            entity.damage(damageSource, damage);
+            entity.damage(world, damageSource, damage);
         }
     }
+
+
 
     private static AttributeModifiersComponent createAttributeModifiers() {
         return AttributeModifiersComponent.builder()
                 .add(
-                        EntityAttributes.GENERIC_ATTACK_DAMAGE,
+                        EntityAttributes.ATTACK_DAMAGE,
                         new EntityAttributeModifier(
                                 BASE_ATTACK_DAMAGE_MODIFIER_ID, ((float) 9), EntityAttributeModifier.Operation.ADD_VALUE
                         ),
                         AttributeModifierSlot.MAINHAND
                 )
                 .add(
-                        EntityAttributes.GENERIC_ATTACK_SPEED,
+                        EntityAttributes.ATTACK_DAMAGE,
                         new EntityAttributeModifier(BASE_ATTACK_SPEED_MODIFIER_ID, (float) -3.4, EntityAttributeModifier.Operation.ADD_VALUE),
                         AttributeModifierSlot.MAINHAND
                 )

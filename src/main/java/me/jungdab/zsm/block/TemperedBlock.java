@@ -6,10 +6,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,12 +23,12 @@ public class TemperedBlock extends Block {
         super(settings);
     }
 
-    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if(stack.isOf(ModItems.TEMPERED_INGOT) && !state.isOf(ModBlocks.TEMPERED_BLOCK)) {
             world.playSound(player, pos, SoundEvents.ENTITY_IRON_GOLEM_REPAIR, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
             if(world.isClient) {
-                return ItemActionResult.SUCCESS;
+                return ActionResult.SUCCESS;
             }
             else {
                 for(BlockPos pos1 : BlockPos.iterate(pos.add(1, 1, 1), pos.add(-1,-1, -1))) this.repairBlock(world, world.getBlockState(pos1), pos1);
@@ -40,7 +41,8 @@ public class TemperedBlock extends Block {
         return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
     }
 
-    protected void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
+    @Override
+    protected void onExploded(BlockState state, ServerWorld world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
         if(state.isOf(ModBlocks.TEMPERED_BLOCK)) {
             world.setBlockState(pos, ModBlocks.CHIPPED_TEMPERED_BLOCK.getDefaultState());
             return;
@@ -52,6 +54,7 @@ public class TemperedBlock extends Block {
 
         super.onExploded(state, world, pos, explosion, stackMerger);
     }
+
 
     private void repairBlock(World world, BlockState state, BlockPos pos) {
         if(state.isOf(ModBlocks.DAMAGED_TEMPERED_BLOCK) || state.isOf(ModBlocks.CHIPPED_TEMPERED_BLOCK))

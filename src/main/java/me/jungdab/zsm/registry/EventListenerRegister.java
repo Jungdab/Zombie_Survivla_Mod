@@ -8,11 +8,14 @@ import me.jungdab.zsm.util.TimeUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -23,22 +26,33 @@ public class EventListenerRegister {
 
     @Environment(EnvType.CLIENT)
     public static void clientRegisterListener() {
-        HudRenderCallback.EVENT.register((drawContext, renderTickCounter) -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-            if(client.world == null) return;
 
-            if(!client.getDebugHud().shouldShowDebugHud()) {
-                long time = client.world.getTimeOfDay();
-                long days = TimeUtil.dayTimeToDay(time);
+        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
+            layeredDrawer.addLayer(new IdentifiedLayer() {
+                @Override
+                public Identifier id() {
+                    return Identifier.of(ZSM.MOD_ID, "gui.zsm.days");
+                }
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().scale(1.5f, 1.5f, 1f);
+                @Override
+                public void render(DrawContext context, RenderTickCounter tickCounter) {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if(client.world == null) return;
 
-                drawContext.drawText(client.inGameHud.getTextRenderer(), Text.translatable("gui.zsm.days").append(" : ").append(String.valueOf(days)), 10, 10, -1, true);
-                drawContext.drawText(client.inGameHud.getTextRenderer(), TimeUtil.dayTimeToHHmm(time), 10, 20, -1, true);
+                    if(!client.getDebugHud().shouldShowDebugHud()) {
+                        long time = client.world.getTimeOfDay();
+                        long days = TimeUtil.dayTimeToDay(time);
 
-                drawContext.getMatrices().pop();
-            }
+                        context.getMatrices().push();
+                        context.getMatrices().scale(1.5f, 1.5f, 1f);
+
+                        context.drawText(client.inGameHud.getTextRenderer(), Text.translatable("gui.zsm.days").append(" : ").append(String.valueOf(days)), 10, 10, -1, true);
+                        context.drawText(client.inGameHud.getTextRenderer(), TimeUtil.dayTimeToHHmm(time), 10, 20, -1, true);
+
+                        context.getMatrices().pop();
+                    }
+                }
+            });
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

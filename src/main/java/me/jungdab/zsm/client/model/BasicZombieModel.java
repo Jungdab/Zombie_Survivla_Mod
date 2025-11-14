@@ -3,20 +3,22 @@ package me.jungdab.zsm.client.model;
 import me.jungdab.zsm.ZSM;
 import me.jungdab.zsm.entity.BasicZombieEntity;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 public class BasicZombieModel extends GeoModel<BasicZombieEntity> {
     @Override
-    public Identifier getModelResource(BasicZombieEntity basicZombieEntity) {
+    public Identifier getModelResource(BasicZombieEntity basicZombieEntity, @Nullable GeoRenderer<BasicZombieEntity> geoRenderer) {
         return Identifier.of(ZSM.MOD_ID, "geo/zombie.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(BasicZombieEntity basicZombieEntity) {
+    public Identifier getTextureResource(BasicZombieEntity basicZombieEntity, @Nullable GeoRenderer<BasicZombieEntity> geoRenderer) {
         return Identifier.of(ZSM.MOD_ID, "textures/entity/zombie.png");
     }
 

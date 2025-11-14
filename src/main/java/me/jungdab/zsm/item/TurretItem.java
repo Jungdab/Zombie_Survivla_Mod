@@ -35,7 +35,7 @@ public class TurretItem extends Item {
             if (world.isSpaceEmpty(null, box) && world.getOtherEntities(null, box).isEmpty()) {
                 if (world instanceof ServerWorld serverWorld) {
                     Consumer<TurretEntity> consumer = EntityType.copier(serverWorld, itemStack, context.getPlayer());
-                    TurretEntity turretEntity = ModEntities.TURRET.create(serverWorld, consumer, blockPos, SpawnReason.SPAWN_EGG, true, true);
+                    TurretEntity turretEntity = ModEntities.TURRET.create(serverWorld, consumer, blockPos, SpawnReason.SPAWN_ITEM_USE, true, true);
                     if (turretEntity == null) {
                         return ActionResult.FAIL;
                     }
@@ -50,7 +50,7 @@ public class TurretItem extends Item {
                 }
 
                 itemStack.decrement(1);
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             } else {
                 return ActionResult.FAIL;
             }

@@ -4,6 +4,7 @@ import me.jungdab.zsm.entity.BossZombieEntity;
 import me.jungdab.zsm.registry.ModAdvancements;
 import me.jungdab.zsm.registry.ModEntities;
 import me.jungdab.zsm.util.TimeUtil;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -49,7 +50,7 @@ public class ServerTime {
 
         BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, player.getBlockPos().add(xOffset, 0, yOffset));
 
-        BossZombieEntity boss = ModEntities.BOSS_ZOMBIE.create(world);
+        BossZombieEntity boss = ModEntities.BOSS_ZOMBIE.create(world, SpawnReason.EVENT);
         if(boss == null) return;
 
         boss.refreshPositionAndAngles(pos, 0, 0);

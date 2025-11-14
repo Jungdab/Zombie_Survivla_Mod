@@ -14,4 +14,8 @@ public class BossZombieRenderer extends GeoEntityRenderer<BossZombieEntity> {
     public BossZombieRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new BossZombieModel(Identifier.of(ZSM.MOD_ID, "boss_zombie")));
     }
+
+    protected boolean canBeCulled(BossZombieEntity bossZombieEntity) {
+        return false;
+    }
 }

@@ -2,12 +2,15 @@ package me.jungdab.zsm.item;
 
 import me.jungdab.zsm.client.renderer.armor.ZombieBoneArmorRenderer;
 import me.jungdab.zsm.registry.ModArmorMaterials;
+import me.jungdab.zsm.registry.ModItems;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.equipment.ArmorMaterial;
+import net.minecraft.item.equipment.EquipmentType;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
@@ -21,7 +24,7 @@ import java.util.function.Consumer;
 public class ZombieBoneArmorItem extends ArmorItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public ZombieBoneArmorItem(RegistryEntry<ArmorMaterial> material, Type type, Settings settings) {
+    public ZombieBoneArmorItem(ArmorMaterial material, EquipmentType type, Settings settings) {
         super(material, type, settings);
     }
 
@@ -63,7 +66,9 @@ public class ZombieBoneArmorItem extends ArmorItem implements GeoItem {
         ArmorItem breastplate = ((ArmorItem)player.getInventory().getArmorStack(2).getItem());
         ArmorItem helmet = ((ArmorItem)player.getInventory().getArmorStack(3).getItem());
 
-        return helmet.getMaterial() == ModArmorMaterials.ZOMBIE_BONE && breastplate.getMaterial() == ModArmorMaterials.ZOMBIE_BONE &&
-                leggings.getMaterial() == ModArmorMaterials.ZOMBIE_BONE && boots.getMaterial() == ModArmorMaterials.ZOMBIE_BONE;
+
+
+        return helmet.asItem() == ModItems.ZOMBIE_BONE_HELMET && breastplate.asItem() == ModItems.ZOMBIE_BONE_CHESTPLATE &&
+                leggings.asItem() == ModItems.ZOMBIE_BONE_LEGGINGS && boots.asItem() == ModItems.ZOMBIE_BONE_BOOTS;
     }
 }

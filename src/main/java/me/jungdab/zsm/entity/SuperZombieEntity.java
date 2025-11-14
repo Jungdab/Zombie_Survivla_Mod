@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -107,8 +108,9 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
         }
     }
 
+
     @Override
-    public boolean tryAttack(Entity target) {
+    public boolean tryAttack(ServerWorld world, Entity target) {
         return true;
     }
 
@@ -205,12 +207,12 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
     }
     public static DefaultAttributeContainer.Builder createZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 100)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
-                .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0);
+                .add(EntityAttributes.MAX_HEALTH, 100)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
+                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY, 1.0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 10.0)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0);
     }
     protected SoundEvent getAmbientSound() {
         return ModSounds.ENTITY_SUPER_ZOMBIE_AMBIENT;
@@ -273,14 +275,16 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
             this.mob.getWorld().sendEntityStatus(this.mob, ModEntityStatuses.ADD_SUPER_ZOMBIE_SMASH_GROUND_PARTICLE);
             this.mob.playSound(SoundEvents.ITEM_MACE_SMASH_GROUND_HEAVY, 1F, 1F);
 
+            if(!(this.mob.getWorld() instanceof  ServerWorld serverWorld)) return;
+
             List<LivingEntity> targetList = this.mob.getWorld().getEntitiesByClass(LivingEntity.class, new Box(this.mob.getX() - 5, this.mob.getY() - 1, this.mob.getZ() - 5, this.mob.getX() + 5, this.mob.getY() + 1.5, this.mob.getZ() + 5), entity -> entity instanceof PlayerEntity || entity instanceof TurretEntity);
             if(targetList.isEmpty()) return;
 
-            float f = (float)this.mob.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            float f = (float)this.mob.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
             DamageSource damageSource = this.mob.getDamageSources().mobAttack(this.mob);
 
             for(LivingEntity player : targetList) {
-                player.damage(damageSource, f);
+                player.damage(serverWorld, damageSource, f);
             }
         }
     }
@@ -350,7 +354,7 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
         protected void findClosestTarget() {
                 this.targetEntity = this.mob
                         .getWorld()
-                        .getClosestEntity(
+                        .getEntities(
                                 this.mob.getWorld().getEntitiesByClass(BombZombieEntity.class, this.getSearchBox(35), livingEntity -> !livingEntity.isIgnited() && !livingEntity.hasVehicle() && !livingEntity.isThrow && !livingEntity.isTargeting),
                                 TargetPredicate.createNonAttackable().setBaseMaxDistance(35),
                                 this.mob,

@@ -62,8 +62,6 @@ public class BossZombieEntity extends ZSMBasicEntity implements GeoEntity {
     public BossZombieEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
 
-        this.ignoreCameraFrustum = true;
-
         part = new BossZombiePart(ModEntities.BOSS_ZOMBIE_PART, world);
         part.setOwner(this);
     }
@@ -102,23 +100,30 @@ public class BossZombieEntity extends ZSMBasicEntity implements GeoEntity {
 
     public void attack(LivingEntity target) {
         this.playSound(ModSounds.ENTITY_BOSS_ZOMBIE_SWING, 5F, 1F);
+
+        World world = this.getWorld();
+        if(!(world instanceof ServerWorld serverWorld)) return;
+
         DamageSource source = this.getDamageSources().mobAttack(this);
-        float f = (float)this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        target.damage(source, f);
+        float f = (float)this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
+        target.damage(serverWorld, source, f);
     }
 
     public void smash() {
         this.playSound(SoundEvents.ITEM_MACE_SMASH_GROUND_HEAVY, 5F, 0.1F);
         this.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE.value(), 5F, 0.5F);
 
+        World world = this.getWorld();
+        if(!(world instanceof ServerWorld serverWorld)) return;
+
         List<LivingEntity> targetList = this.getWorld().getEntitiesByClass(LivingEntity.class, new Box(this.getX() - 30, this.getY() - 4, this.getZ() - 30, this.getX() + 30, this.getY() + 4, this.getZ() + 30), entity -> !entity.equals(this));
         if(targetList.isEmpty()) return;
 
-        float f = (float)this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) * 1.5f;
+        float f = (float)this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE) * 1.5f;
         DamageSource damageSource = this.getDamageSources().mobAttack(this);
 
         for(LivingEntity entity : targetList) {
-            entity.damage(damageSource, f);
+            entity.damage(serverWorld, damageSource, f);
             if(entity.isOnGround()) entity.addStatusEffect(new StatusEffectInstance(ModEffects.STUN, 60, 0));
         }
     }
@@ -183,9 +188,10 @@ public class BossZombieEntity extends ZSMBasicEntity implements GeoEntity {
         }
     }
 
-    public void mobTick() {
+    @Override
+    protected void mobTick(ServerWorld world) {
         this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
-        super.mobTick();
+        super.mobTick(world);
     }
 
     public void tickMovement() {
@@ -224,12 +230,12 @@ public class BossZombieEntity extends ZSMBasicEntity implements GeoEntity {
 
     public static DefaultAttributeContainer.Builder createZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 1000)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
-                .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0);
+                .add(EntityAttributes.MAX_HEALTH, 1000)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
+                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY, 1.0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 10.0)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0);
     }
 //    protected SoundEvent getAmbientSound() {
 //        return ModSounds.ENTITY_BOSS_ZOMBIE_AMBIENT;
