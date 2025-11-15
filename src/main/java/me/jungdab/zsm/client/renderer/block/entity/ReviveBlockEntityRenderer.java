@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityPose;
@@ -35,7 +36,12 @@ public class ReviveBlockEntityRenderer implements BlockEntityRenderer<ReviveBloc
         playerEntity.prevHeadYaw = 25;
         playerEntity.setHeadYaw(25);
 
-        client.getEntityRenderDispatcher().getRenderer(playerEntity).render(playerEntity, 0f, tickDelta, matrices, vertexConsumers, light);
+        EntityRenderer entityRenderer = client.getEntityRenderDispatcher().getRenderer(playerEntity);
+        entityRenderer.render(client.getEntityRenderDispatcher().getRenderer(playerEntity).getAndUpdateRenderState(playerEntity, tickDelta),
+                        matrices,
+                        vertexConsumers,
+                        light
+        );
 
         matrices.pop();
     }

@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
 public class BossZombiePart extends Entity {
@@ -45,9 +46,11 @@ public class BossZombiePart extends Entity {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        return this.owner != null && this.owner.damage(source, amount);
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        return this.owner != null && this.owner.damage(world, source, amount);
     }
+
+
     @Override
     public EntityDimensions getDimensions(EntityPose pose) {
         return this.partDimensions;

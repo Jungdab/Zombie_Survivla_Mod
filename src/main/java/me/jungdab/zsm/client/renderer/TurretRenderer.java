@@ -95,8 +95,6 @@ public class TurretRenderer extends GeoEntityRenderer<TurretEntity> {
         this.modelRenderTranslations = new Matrix4f(poseStack.peek().getPositionMatrix());
 
         if (buffer != null) {
-            updateAnimatedTextureFrame(animatable);
-
             for (GeoBone group : model.topLevelBones()) {
                 renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
                         packedOverlay, colour);

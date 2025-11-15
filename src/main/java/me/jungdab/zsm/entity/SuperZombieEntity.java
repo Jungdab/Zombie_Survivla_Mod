@@ -11,7 +11,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -44,7 +46,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-import static software.bernie.geckolib.constant.DefaultAnimations.*;
+import static software.bernie.geckolib.constant.DefaultAnimations.ATTACK_CAST;
 
 public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
     private static final TrackedData<Boolean> ATTACK = DataTracker.registerData(SuperZombieEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -79,11 +81,14 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
     @Override
     public void tickMovement() {
         super.tickMovement();
-        if (!this.getWorld().isClient && this.isAlive()) {
+
+        if(!(this.getWorld() instanceof ServerWorld world)) return;
+
+        if (!this.isAlive()) {
             this.meleeAttackTargetGoal.setEnable(!this.isFindBombZombie);
         }
 
-        if (this.horizontalCollision && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING)) {
+        if (this.horizontalCollision && world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING)) {
             boolean bl = false;
             Box box = this.getBoundingBox().expand(0.2);
 
@@ -352,16 +357,16 @@ public class SuperZombieEntity extends ZSMBasicEntity implements GeoEntity {
         }
 
         protected void findClosestTarget() {
-                this.targetEntity = this.mob
-                        .getWorld()
-                        .getEntities(
+            if(!(this.mob.getWorld() instanceof ServerWorld world)) return;
+
+            this.targetEntity =  world.getClosestEntity(
                                 this.mob.getWorld().getEntitiesByClass(BombZombieEntity.class, this.getSearchBox(35), livingEntity -> !livingEntity.isIgnited() && !livingEntity.hasVehicle() && !livingEntity.isThrow && !livingEntity.isTargeting),
                                 TargetPredicate.createNonAttackable().setBaseMaxDistance(35),
                                 this.mob,
                                 this.mob.getX(),
                                 this.mob.getEyeY(),
                                 this.mob.getZ()
-                        );
+            );
         }
 
         protected Box getSearchBox(double distance) {

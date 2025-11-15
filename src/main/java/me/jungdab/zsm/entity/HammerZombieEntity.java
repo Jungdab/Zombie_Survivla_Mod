@@ -19,6 +19,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -73,22 +74,24 @@ public class HammerZombieEntity extends ZSMBasicEntity implements GeoEntity {
     }
 
     public void swingAttack(LivingEntity target) {
+        if(!(this.getWorld() instanceof ServerWorld world)) return;
+
         if(target.squaredDistanceTo(this) > 16) return;
 
         DamageSource source = this.getDamageSources().mobAttack(this);
-        float f = (float)this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        target.damage(source, f);
+        float f = (float)this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
+        target.damage(world, source, f);
         target.addStatusEffect(new StatusEffectInstance(ModEffects.STUN, 20, 0));
     }
 
     public static DefaultAttributeContainer.Builder createZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 40)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
-                .add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0);
+                .add(EntityAttributes.MAX_HEALTH, 40)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
+                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY, 1.0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 5.0)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0);
 
     }
 

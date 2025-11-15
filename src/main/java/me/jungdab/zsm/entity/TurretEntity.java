@@ -112,14 +112,15 @@ public class TurretEntity extends MobEntity implements GeoEntity {
     public void setAttack(boolean attack) {this.dataTracker.set(ATTACK, attack);}
     public boolean isAttack() {return this.dataTracker.get(ATTACK);}
 
+
     @Override
-    public boolean tryAttack(Entity target) {
-        float f = (float)this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+    public boolean tryAttack(ServerWorld world, Entity target) {
+        float f = (float)this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
         DamageSource damageSource = this.mobAttack(this);
         if (this.getWorld() instanceof ServerWorld serverWorld) {
             f = EnchantmentHelper.getDamage(serverWorld, this.getWeaponStack(), target, damageSource, f);
         }
-        boolean bl = target.damage(damageSource, f);
+        boolean bl = target.damage(world, damageSource, f);
         if (bl) {
             float g = this.getKnockbackAgainst(target, damageSource);
             if (g > 0.0F && target instanceof LivingEntity livingEntity) {
@@ -153,10 +154,10 @@ public class TurretEntity extends MobEntity implements GeoEntity {
 
     public static DefaultAttributeContainer.Builder createTurretAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0);
+                .add(EntityAttributes.MAX_HEALTH, 20)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 2.5)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0);
     }
 
     @Override
@@ -247,6 +248,8 @@ public class TurretEntity extends MobEntity implements GeoEntity {
         }
 
         public void tick() {
+            if(!(this.mob.getWorld() instanceof  ServerWorld world)) return;
+
             LivingEntity livingEntity = this.mob.getTarget();
             if (livingEntity != null) {
                 this.mob.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, livingEntity.getPos());
@@ -254,7 +257,7 @@ public class TurretEntity extends MobEntity implements GeoEntity {
                 this.currentCooldown++;
                 if(this.currentCooldown == 1) {
                     this.mob.setAttack(true);
-                    this.mob.tryAttack(livingEntity);
+                    this.mob.tryAttack(world, livingEntity);
 
                     this.mob.playAttackSound();
                     this.mob.getWorld().sendEntityStatus(this.mob, ModEntityStatuses.ADD_TURRET_SHOOT_PARTICLE);

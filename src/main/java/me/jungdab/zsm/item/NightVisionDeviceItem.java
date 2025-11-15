@@ -16,7 +16,7 @@ public class NightVisionDeviceItem extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ((ServerPlayerEntity) user).getAdvancementTracker().grantCriterion(ModAdvancements.EQUIP_NIGHT_VISION_DEVICE, "equip_night_vision_device");
+        if(!world.isClient) ((ServerPlayerEntity) user).getAdvancementTracker().grantCriterion(ModAdvancements.EQUIP_NIGHT_VISION_DEVICE, "equip_night_vision_device");
         return super.use(world,user,hand);
     }
 }

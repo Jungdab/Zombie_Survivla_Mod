@@ -108,7 +108,11 @@ public class BasicZombieEntity extends ZSMBasicEntity implements GeoEntity {
     }
 
     public static DefaultAttributeContainer.Builder createZombieAttributes() {
-        return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35).add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 1.0).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0).add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0);
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
+                .add(EntityAttributes.WATER_MOVEMENT_EFFICIENCY, 1.0)
+                .add(EntityAttributes.ATTACK_DAMAGE, 3.0)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0);
     }
 
     protected SoundEvent getAmbientSound() {

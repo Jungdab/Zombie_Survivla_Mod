@@ -11,7 +11,7 @@ public class StunEffect extends StatusEffect {
     public StunEffect() {
         super(StatusEffectCategory.HARMFUL, 0xFAB12F);
 
-        this.addAttributeModifier(EntityAttributes.GENERIC_JUMP_STRENGTH, Identifier.of(ZSM.MOD_ID, "effect.stun"), -100F, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE)
-            .addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, Identifier.of(ZSM.MOD_ID, "effect.stun"), -100F, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        this.addAttributeModifier(EntityAttributes.JUMP_STRENGTH, Identifier.of(ZSM.MOD_ID, "effect.stun"), -100F, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+            .addAttributeModifier(EntityAttributes.MOVEMENT_SPEED, Identifier.of(ZSM.MOD_ID, "effect.stun"), -100F, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 }

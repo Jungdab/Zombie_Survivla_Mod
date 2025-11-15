@@ -1,9 +1,10 @@
 package me.jungdab.zsm.item;
 
 import me.jungdab.zsm.client.renderer.armor.ZombieBoneArmorRenderer;
-import me.jungdab.zsm.registry.ModArmorMaterials;
 import me.jungdab.zsm.registry.ModItems;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,12 +35,13 @@ public class ZombieBoneArmorItem extends ArmorItem implements GeoItem {
             private GeoArmorRenderer<?> renderer;
 
             @Override
-            public <T extends LivingEntity> BipedEntityModel<?> getGeoArmorRenderer(@Nullable T livingEntity, ItemStack itemStack, @Nullable EquipmentSlot equipmentSlot, @Nullable BipedEntityModel<T> original) {
+            public <E extends LivingEntity, S extends BipedEntityRenderState> BipedEntityModel<?> getGeoArmorRenderer(@Nullable E livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, EquipmentModel.LayerType type, BipedEntityModel<S> original) {
                 if(this.renderer == null)
                     this.renderer = new ZombieBoneArmorRenderer();
 
                 return this.renderer;
             }
+
         });
     }
 

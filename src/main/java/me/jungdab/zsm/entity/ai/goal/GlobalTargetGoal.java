@@ -4,6 +4,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 
 public class GlobalTargetGoal<T extends LivingEntity> extends Goal {
@@ -43,7 +44,8 @@ public class GlobalTargetGoal<T extends LivingEntity> extends Goal {
     }
 
     protected void findClosestTarget() {
-        LivingEntity entity = this.mob.getWorld().getClosestEntity(this.targetClass, TargetPredicate.createAttackable(), this.mob, this.mob.getX(), this.mob.getX(), this.mob.getX(), this.getSearchBox(200));
+        if(!(this.mob.getWorld() instanceof ServerWorld world)) return;
+        LivingEntity entity = world.getClosestEntity(this.targetClass, TargetPredicate.createAttackable(), this.mob, this.mob.getX(), this.mob.getX(), this.mob.getX(), this.getSearchBox(200));
         LivingEntity entity1 = this.mob.getWorld().getClosestPlayer(this.mob.getX(), this.mob.getY(), this.mob.getZ(), 200, true);
 
         if(entity == null && entity1 == null) this.targetEntity = null;

@@ -9,9 +9,12 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.AdvancementRewards;
 import net.minecraft.advancement.criterion.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -26,6 +29,8 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
 
     @Override
     public void generateAdvancement(RegistryWrapper.WrapperLookup wrapperLookup, Consumer<AdvancementEntry> consumer) {
+        final RegistryWrapper.Impl<Item> itemLookup = wrapperLookup.getOrThrow(RegistryKeys.ITEM);
+
         AdvancementEntry root = Advancement.Builder.create()
                 .display(
                         ModItems.BASIC_ZOMBIE_SPAWN_EGG,
@@ -53,19 +58,19 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                 )
                 .criterion("got_zombie_bone", InventoryChangedCriterion.Conditions.items(ModItems.ZOMBIE_BONE))
                 .rewards(AdvancementRewards.Builder
-                        .recipe(Identifier.of(ZSM.MOD_ID, "fence"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "night_vision_device"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "tempered_block"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "tempered_ingot"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "turret"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "turret_core"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_bone_boots"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_bone_chestplate"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_bone_helmet"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_bone_leggings"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_bone_sword"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_ingot"))
-                        .addRecipe(Identifier.of(ZSM.MOD_ID, "zombie_ingot_block"))
+                        .recipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "fence")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "night_vision_device")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "tempered_block")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "tempered_ingot")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "turret")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "turret_core")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_bone_boots")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_bone_chestplate")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_bone_helmet")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_bone_leggings")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_bone_sword")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_ingot")))
+                        .addRecipe(RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(ZSM.MOD_ID, "zombie_ingot_block")))
                 )
                 .build(consumer, "zsm:got_zombie_bone");
 
@@ -80,7 +85,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         true,
                         false
                 )
-                .criterion("using_turret", ItemCriterion.Conditions.createItemUsedOnBlock(LocationPredicate.Builder.create(), ItemPredicate.Builder.create().items(ModItems.TURRET_ITEM)))
+                .criterion("using_turret", ItemCriterion.Conditions.createItemUsedOnBlock(LocationPredicate.Builder.create(), ItemPredicate.Builder.create().items(itemLookup, ModItems.TURRET_ITEM)))
                 .build(consumer, "zsm:using_turret");
 
         AdvancementEntry equipNightVisionDevice = Advancement.Builder.create().parent(root)
@@ -94,7 +99,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         true,
                         false
                 )
-                .criterion("equip_night_vision_device", ItemCriterion.Conditions.createItemUsedOnBlock(LocationPredicate.Builder.create(), ItemPredicate.Builder.create().items(ModItems.NIGHT_VISION_DEVICE)))
+                .criterion("equip_night_vision_device", ItemCriterion.Conditions.createItemUsedOnBlock(LocationPredicate.Builder.create(), ItemPredicate.Builder.create().items(itemLookup, ModItems.NIGHT_VISION_DEVICE)))
                 .build(consumer, "zsm:equip_night_vision_device");
 
         //갑옷, 펜스

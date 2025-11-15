@@ -27,6 +27,14 @@
   "item.zsm.zombie_hammer.lore": "§r§7공격 시:",
   "item.zsm.zombie_hammer.lore2": "§r§92초간 기절",
 
+  "item.zsm.zombie_ingot_block": "좀비 뼈 주괴 블럭",
+  "item.zsm.fence": "펜스",
+  "item.zsm.chipped_fence": "손상된 펜스",
+  "item.zsm.damaged_fence": "망가진 펜스",
+  "item.zsm.tempered_block": "강화 블럭",
+  "item.zsm.chipped_tempered_block": "손상된 강화 블럭",
+  "item.zsm.damaged_tempered_block": "망가진 강화 블럭",
+
   "block.zsm.zombie_ingot_block": "좀비 뼈 주괴 블럭",
   "block.zsm.fence": "펜스",
   "block.zsm.chipped_fence": "손상된 펜스",

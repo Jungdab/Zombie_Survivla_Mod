@@ -27,6 +27,14 @@
   "item.zsm.zombie_hammer.lore": "§r§7When attacking:",
   "item.zsm.zombie_hammer.lore2": "§r§9Stun for 2 seconds",
 
+  "item.zsm.zombie_ingot_block": "Zombie Ingot Block",
+  "item.zsm.fence": "Fence",
+  "item.zsm.chipped_fence": "Chipped Fence",
+  "item.zsm.damaged_fence": "Damaged Fence",
+  "item.zsm.tempered_block": "Tempered Block",
+  "item.zsm.chipped_tempered_block": "Chipped Tempered Block",
+  "item.zsm.damaged_tempered_block": "Damaged Tempered Block",
+
   "block.zsm.zombie_ingot_block": "Zombie Ingot Block",
   "block.zsm.fence": "Fence",
   "block.zsm.chipped_fence": "Chipped Fence",

@@ -72,7 +72,7 @@ public class ZombieHammerItem extends Item {
                         AttributeModifierSlot.MAINHAND
                 )
                 .add(
-                        EntityAttributes.ATTACK_DAMAGE,
+                        EntityAttributes.ATTACK_SPEED,
                         new EntityAttributeModifier(BASE_ATTACK_SPEED_MODIFIER_ID, (float) -3.4, EntityAttributeModifier.Operation.ADD_VALUE),
                         AttributeModifierSlot.MAINHAND
                 )
